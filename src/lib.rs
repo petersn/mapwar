@@ -1,4 +1,2 @@
-
-pub fn function() -> i32 {
-  1
-}
+pub mod game_state;
+pub mod rng;

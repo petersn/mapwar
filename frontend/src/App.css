@@ -1,1 +1,6 @@
 
+/* Color the page background to be dark */
+body {
+  background-color: #282c34;
+  color: white;
+}
