@@ -1,6 +1,6 @@
-use std::{collections::HashMap, cmp::Ordering};
+use std::{cmp::Ordering, collections::HashMap};
 
-use anyhow::{bail, Error, anyhow};
+use anyhow::{anyhow, bail, Error};
 use serde::{Deserialize, Serialize};
 
 use crate::rng::Rng;
@@ -176,17 +176,20 @@ impl GameState {
           Some(pair) => pair,
           _ => return 0,
         };
-        2 * self.player_states[owner].defense_level + match terr.command {
-          Command::Attack { .. } => units,
-          _ => 2 * units,
-        } + match terr.sort {
-          TerritorySort::Swamp => -2,
-          TerritorySort::Forest => 2,
-          _ => units,
-        } + match terr.command {
-          Command::Fortify => 2,
-          _ => 0,
-        }
+        2 * self.player_states[owner].defense_level
+          + match terr.command {
+            Command::Attack { .. } => units,
+            _ => 2 * units,
+          }
+          + match terr.sort {
+            TerritorySort::Swamp => -2,
+            TerritorySort::Forest => 2,
+            _ => units,
+          }
+          + match terr.command {
+            Command::Fortify => 2,
+            _ => 0,
+          }
       })
       .collect();
     // Each territory's incoming attack points is simply the sum of the units attacking it,
@@ -199,7 +202,11 @@ impl GameState {
       };
       if let Command::Attack { target } = terr.command {
         // Check who owns the target territory.
-        if self.territories[target].contents.map(|(target_owner, _)| target_owner == owner).unwrap_or(false) {
+        if self.territories[target]
+          .contents
+          .map(|(target_owner, _)| target_owner == owner)
+          .unwrap_or(false)
+        {
           half_defense_points[target] += units;
         } else {
           incoming_half_attack_points[target] += units;
@@ -282,7 +289,7 @@ impl GameState {
           render_info_from: self.territories[source_terr_index].render_info,
           render_info_to:   self.territories[target_terr_index].render_info,
           // FIXME: Shouldn't be 0.
-          amount:      0,
+          amount:           0,
         });
       }
     }
